@@ -17,11 +17,13 @@ end
 function Base.show(io_out::IO, x::ShPipe)
     x.cmd() do cmd
         open(`$cmd $(x.args)`, io_out, write=true) do io_in
-            show(io_in, x.val)
+            show(io_in, MIME("text/plain"), x.val)
         end
     end
-    # delete additional newline
-    print(io_out, "\033[1A")
+    if x.cmd === grep
+        # delete additional newline
+        print(io_out, "\033[1A")
+    end
     return nothing
 end
 
@@ -43,6 +45,13 @@ macro special_command(cmd)
     return quote
         export $(Symbol('@', cmd))
         macro $cmd(args...)
+            args = map(args) do arg
+                # interpret raw_str as raw string
+                if Meta.isexpr(arg, :macrocall) && arg.args[1] === Symbol("@raw_str")
+                    arg = arg.args[3]
+                end
+                return arg isa String ? string('"', arg, '"') : arg
+            end
             args = join(args, ' ')
             return :(ShPipeEndpoint($$cmd, @cmd($args)))
         end
