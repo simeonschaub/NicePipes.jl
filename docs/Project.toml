@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+NicePipes = "13650a8a-fc62-4efe-b79a-7f834fdd9eb5"
