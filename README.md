@@ -7,7 +7,7 @@
 
 Pipe REPL `show` output into unix tools:
 
-```julia-repl
+```julia
 julia> using NicePipes
 
 julia> methods(+) | @grep BigFloat
