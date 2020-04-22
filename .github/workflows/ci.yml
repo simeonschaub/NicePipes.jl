@@ -18,7 +18,14 @@ jobs:
           - windows-latest
         arch:
           - x64
+        include:
+          - version: '1.0'
+            os: ubuntu-latest
+            arch: x64
     steps:
+      - name: Install grep and sed
+        if: matrix.version == '1.0' && matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y grep sed
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
