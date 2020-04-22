@@ -3,8 +3,14 @@ uuid = "13650a8a-fc62-4efe-b79a-7f834fdd9eb5"
 authors = ["Simeon Schaub <simeondavidschaub99@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+grep_jll = "47013893-54eb-5c9c-83b4-9a24496ece36"
+sed_jll = "8ce03227-cf0a-51af-b0b4-2693c0743e9f"
+
 [compat]
+grep_jll = "3"
 julia = "1"
+sed_jll = "4"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
