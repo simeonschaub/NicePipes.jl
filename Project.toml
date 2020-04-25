@@ -1,7 +1,7 @@
 name = "NicePipes"
 uuid = "13650a8a-fc62-4efe-b79a-7f834fdd9eb5"
 authors = ["Simeon Schaub <simeondavidschaub99@gmail.com> and contributors"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 grep_jll = "47013893-54eb-5c9c-83b4-9a24496ece36"
