@@ -14,20 +14,33 @@ struct ShPipe{T,C}
     args::Cmd
 end
 
+# like Base.open, but doesn't throw if exitcode is non-zero and always returns process instead
+# of return value of f
+function _open(f::Function, cmds::Base.AbstractCmd, args...; kwargs...)
+    P = open(cmds, args...; kwargs...)
+    ret = try
+        f(P)
+    catch
+        kill(P)
+        rethrow()
+    finally
+        close(P.in)
+    end
+    wait(P)
+    return P
+end
+
+
 function Base.show(io_out::IO, x::ShPipe)
     x.cmd() do cmd
-        try
-            open(`$cmd $(x.args)`, io_out, write=true) do io_in
-                show(io_in, MIME("text/plain"), x.val)
-            end
-        catch e
-            e isa ProcessFailedException || rethrow(e)
-            proc = e.procs[1]
-            if x.cmd === grep && proc.exitcode == 1
-                println(io_out, "No matches found!")
-                return nothing
-            end
-            print(io_out, "Command $(proc.cmd) failed with exit code $(proc.exitcode)")
+        p = _open(`$cmd $(x.args)`, "w", io_out) do io_in
+            show(io_in, MIME("text/plain"), x.val)
+        end
+        if x.cmd === grep && p.exitcode == 1
+            println(io_out, "No matches found!")
+            return nothing
+        elseif p.exitcode != 0
+            print(io_out, "Command $(p.cmd) failed with exit code $(p.exitcode)")
         end
     end
     if x.cmd === grep
