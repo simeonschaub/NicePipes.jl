@@ -38,14 +38,12 @@ function Base.show(io_out::IO, x::ShPipe)
         end
         if x.cmd === grep && p.exitcode == 1
             println(io_out, "No matches found!")
-            return nothing
         elseif p.exitcode != 0
             print(io_out, "Command $(p.cmd) failed with exit code $(p.exitcode)")
+        elseif x.cmd === grep
+            # delete additional newline
+            print(io_out, "\033[1A")
         end
-    end
-    if x.cmd === grep
-        # delete additional newline
-        print(io_out, "\033[1A")
     end
     return nothing
 end
