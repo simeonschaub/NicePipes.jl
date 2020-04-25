@@ -16,8 +16,18 @@ end
 
 function Base.show(io_out::IO, x::ShPipe)
     x.cmd() do cmd
-        open(`$cmd $(x.args)`, io_out, write=true) do io_in
-            show(io_in, MIME("text/plain"), x.val)
+        try
+            open(`$cmd $(x.args)`, io_out, write=true) do io_in
+                show(io_in, MIME("text/plain"), x.val)
+            end
+        catch e
+            e isa ProcessFailedException || rethrow(e)
+            proc = e.procs[1]
+            if x.cmd === grep && proc.exitcode == 1
+                println(io_out, "No matches found!")
+                return nothing
+            end
+            print(io_out, "Command $(proc.cmd) failed with exit code $(proc.exitcode)")
         end
     end
     if x.cmd === grep

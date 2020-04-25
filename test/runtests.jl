@@ -24,6 +24,7 @@ end
     ]
     test_show((a | @grep foo), show_a[2])
     test_show((a | @grep -iv FoO), join(show_a[[1, 3]], LE))
+    test_show((3 | @grep 4), "No matches found!")
     test_show((a | @sed "/foo/d"), join(show_a[[1, 3]], LE))
     test_show((a | @sed raw"s/f\(o\+\)/b\1/g"), show_a[1] * LE * " \"boo\"" * LE * show_a[3])
 end
