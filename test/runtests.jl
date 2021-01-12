@@ -18,7 +18,7 @@ end
 @testset "NicePipes.jl" begin
     a = ["foo", "bar"]
     show_a = [
-        "2-element Array{String,1}:",
+        "2-element $(Vector{String}):",
         " \"foo\"",
         " \"bar\"",
     ]
